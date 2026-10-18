@@ -1,0 +1,13 @@
+[Unit]
+Wants=reachy-companion.service
+After=reachy-companion.service
+
+[Service]
+ExecStart=
+ExecStart=@MUSE_PYTHON@ -m reachy_companion.muse_adapter --config @ADAPTER_CONFIG@
+# Preserve SDK state, command account, environment and legacy socket.
+# Append a separate directory; do not reset the stock RuntimeDirectory.
+RuntimeDirectory=reachy-companion-muse
+RuntimeDirectoryMode=0750
+Restart=always
+RestartSec=5

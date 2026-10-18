@@ -1,0 +1,26 @@
+[Unit]
+Description=Reachy companion worker
+After=network.target reachy-mini-daemon.service
+BindsTo=reachy-mini-daemon.service
+PartOf=reachy-mini-daemon.service
+
+[Service]
+Type=simple
+User=@WORKER_USER@
+Group=@SOCKET_GROUP@
+WorkingDirectory=@PROJECT_DIR@
+ExecStartPre=+@SYSTEM_PYTHON@ @PROJECT_DIR@/deploy/prepare_camera_socket.py --socket @CAMERA_SOCKET@ --owner @DAEMON_UID@ --group @SOCKET_GID@
+ExecStart=@WORKER_PYTHON@ -m reachy_companion.runtime --config @WORKER_CONFIG@
+RuntimeDirectory=reachy-companion-worker
+RuntimeDirectoryMode=0750
+UMask=0027
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+KillMode=control-group
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=@WORKER_STATE_DIR@ %T
+
+[Install]
+WantedBy=multi-user.target reachy-mini-daemon.service

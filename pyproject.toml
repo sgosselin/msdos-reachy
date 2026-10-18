@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reachy-companion"
+version = "0.1.0"
+description = "A standalone Reachy companion worker and Muse SDK adapter"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+media = ["numpy>=1.26", "Pillow>=10"]
+test = ["pytest>=8", "pytest-asyncio>=0.24", "numpy>=1.26", "Pillow>=10"]
+
+[project.scripts]
+reachy-companion = "reachy_companion.cli:main"
+reachy-companion-worker = "reachy_companion.runtime:main"
+reachy-companion-muse = "reachy_companion.muse_adapter:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["error"]

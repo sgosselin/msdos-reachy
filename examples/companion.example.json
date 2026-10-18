@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "worker_socket": "runtime/worker/runtime.sock",
+  "adapter_socket": "runtime/adapter/muse.sock",
+  "state_dir": "state/companion",
+  "modules": ["reachy_companion.tools.core", "reachy_companion.behaviors.cues"],
+  "audio_enabled": false,
+  "camera_enabled": false,
+  "motion_enabled": false,
+  "checked_presets": []
+}

@@ -1,0 +1,31 @@
+--- a/linux/src/musegadget/service.py
++++ b/linux/src/musegadget/service.py
+@@ -32,6 +32,7 @@
+ import socket
+ import time
+ from dataclasses import dataclass, field
++from typing import Callable
+ 
+ from musegadget import __version__, config, muse_api
+ from musegadget.executor import COMMAND_SPECS, Executor
+@@ -81,6 +82,8 @@
+     _last_refresh_attempt: float = float("-inf")
+     _sdk_token_change_warned: bool = False
+     _current: LinkSession | None = None
++    command_specs: dict = field(default_factory=lambda: COMMAND_SPECS.copy())
++    session_factory: Callable[..., LinkSession] = LinkSession
+ 
+     def stop(self) -> None:
+         self._stop.set()
+@@ -133,9 +136,9 @@
+             node_id=self.identity.node_id,
+             display_name=self.display_name,
+             version=__version__,
+-            commands=COMMAND_SPECS,
++            commands=self.command_specs,
+         )
+-        session = LinkSession(
++        session = self.session_factory(
+             noise_host=pairing.get("noise_host") or DEFAULT_NOISE_HOST,
+             vm_id=vm["vm_id"] or vm["vm_name"],
+             vm_auth_token=vm["vm_auth_token"],
