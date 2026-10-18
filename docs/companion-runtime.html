@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A two-page, source-grounded explanation of Muse tool registration and a proposed standalone companion runtime for Reachy Mini.">
+  <title>Reachy × Muse — Tools and the companion runtime</title>
+  <style>
+    :root { --ink:#22273a; --muted:#626a7d; --purple:#6653ba; --tint:#f1eefb; --line:#dde1ea; --green:#276851; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#e9ecf2; font:13.4px/1.38 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .toolbar { max-width:816px; margin:20px auto 12px; display:flex; justify-content:space-between; align-items:center; padding:0 3px; color:var(--muted); font-size:12px; }
+    button { font:inherit; border:1px solid #b9bfce; background:white; color:var(--ink); border-radius:7px; padding:8px 14px; cursor:pointer; }
+    button:hover { background:var(--tint); }
+    a { color:var(--purple); text-underline-offset:2px; }
+    a:focus-visible,button:focus-visible { outline:3px solid #a596e0; outline-offset:3px; }
+    .page { width:816px; min-height:1056px; margin:0 auto 24px; padding:34px 44px 30px; background:white; box-shadow:0 8px 30px #26354c12; display:flex; flex-direction:column; }
+    .content { flex:1; }
+    .eyebrow { color:var(--purple); font-size:10px; letter-spacing:.14em; font-weight:750; text-transform:uppercase; margin:0 0 10px; }
+    h1 { font-size:35px; letter-spacing:-.045em; line-height:1.08; margin:0 0 12px; }
+    h2 { font-size:19px; line-height:1.2; letter-spacing:-.025em; margin:14px 0 8px; }
+    h3 { font-size:13px; margin:0 0 4px; }
+    p { margin:0 0 8px; }
+    .lead { font-size:14px; line-height:1.4; margin-bottom:12px; }
+    .status { border-left:3px solid #67a48c; padding:7px 11px; background:#f0f7f4; font-size:12px; color:#305d4e; }
+    .number { color:var(--purple); margin-right:8px; font-size:12px; font-weight:750; }
+    code { font:11.7px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; overflow-wrap:anywhere; }
+    p code,td code,li code { background:#f1f2f6; padding:1px 3px; border-radius:3px; }
+    pre { margin:9px 0 10px; padding:13px 16px; background:#252a3d; color:#edf0fa; border-radius:8px; line-height:1.4; }
+    pre code { font-size:11.5px; background:none; }
+    .small { font-size:12px; color:var(--muted); }
+    .tiny { font-size:10.7px; color:var(--muted); }
+    table { width:100%; border-collapse:collapse; margin:8px 0 10px; font-size:12.3px; line-height:1.35; }
+    th { text-align:left; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-size:9px; border-bottom:1px solid #bfc6d5; padding:6px 9px; }
+    td { vertical-align:top; border-bottom:1px solid var(--line); padding:6px 9px; }
+    td:first-child { padding-left:0; }
+    th:first-child { padding-left:0; }
+    .sources td:first-child { width:41%; }
+    .choices td:first-child { width:25%; font-weight:650; }
+    .choices .selected { background:#f6f4fc; }
+    .choices .selected td:first-child { padding-left:8px; color:var(--purple); }
+    .flow { display:flex; align-items:stretch; gap:7px; margin:11px 0; }
+    .flow-box { flex:1; padding:9px 8px; border:1px solid var(--line); border-radius:7px; background:#fbfbfd; font-size:11px; text-align:center; }
+    .flow-box strong { display:block; font-size:12px; margin-bottom:3px; }
+    .arrow { align-self:center; color:var(--purple); font-size:17px; }
+    .note { padding:11px 13px; background:var(--tint); border-radius:8px; margin-top:10px; font-size:12.5px; }
+    .architecture { display:grid; grid-template-columns:1fr 30px 1.25fr 30px 1.3fr; gap:0; align-items:center; margin:15px 0 8px; }
+    .node { border:1px solid var(--line); padding:10px 11px; border-radius:9px; font-size:11px; line-height:1.3; min-height:83px; }
+    .node strong { display:block; font-size:13px; margin-bottom:5px; }
+    .node.sdk { background:var(--tint); border-color:#d6cdef; }
+    .connector { color:var(--purple); text-align:center; font-size:22px; }
+    .map td:first-child { width:17%; font-weight:650; }
+    ol { margin:8px 0 0; padding-left:21px; font-size:12.5px; }
+    li { margin:0 0 7px; padding-left:2px; }
+    footer { display:flex; justify-content:space-between; align-items:center; gap:15px; border-top:1px solid var(--line); padding-top:10px; margin-top:18px; font-size:10px; color:var(--muted); }
+    footer code { font-size:9.8px; }
+    @page { size:letter; margin:0; }
+    @media print {
+      body { background:white; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      .toolbar { display:none; }
+      .page { width:8.5in; height:11in; min-height:0; margin:0; box-shadow:none; break-after:page; }
+      .page:last-child { break-after:auto; }
+      tr,pre,.flow,.architecture,.note,li { break-inside:avoid; }
+    }
+    @media screen and (max-width:850px) {
+      .toolbar { margin:12px 16px; }
+      .page { width:calc(100% - 24px); padding:28px 24px; min-height:0; }
+      h1 { font-size:30px; }
+    }
+    @media screen and (max-width:560px) {
+      .flow { flex-wrap:wrap; }
+      .flow-box { flex-basis:40%; }
+      .flow .arrow { display:none; }
+      .architecture { grid-template-columns:1fr; gap:5px; }
+      .node { min-height:0; }
+      .connector { transform:rotate(90deg); font-size:18px; }
+      .sources td:first-child { width:43%; }
+      pre { overflow-x:auto; }
+      footer { align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar"><span>Reachy × Muse · Architecture note · 17 October 2026</span><button type="button" onclick="window.print()">Print / Save PDF</button></div>
+  <main>
+    <article class="page" aria-labelledby="page-one-title">
+      <div class="content">
+        <p class="eyebrow">01 / Tools, registration and the SDK boundary</p>
+        <h1 id="page-one-title">How Muse learns a tool</h1>
+        <p class="lead"><strong>The SDK library already accepts custom tools.</strong> We can own their definitions and handlers without editing <code>executor.py</code>. Our adapter will expose those library hooks and media APIs to the companion runtime.</p>
+        <p class="status">Verified: paired, registered, health answer confirmed in Muse. Below: proposed architecture, not deployed code.</p>
+
+        <h2><span class="number">01</span>Why Muse knows <code>device.health</code></h2>
+        <p>On each connection, the SDK advertises tool names, descriptions and parameters. Muse receives the catalog and can request a tool by name. The stock catalog lives in <code>executor.py</code>; our runtime can supply its own catalog and dispatcher.</p>
+        <div class="flow" role="img" aria-label="A local tool definition is registered with Muse; Muse invokes the named tool; Reachy returns its result with the invocation ID.">
+          <div class="flow-box"><strong>Definition</strong><code>COMMAND_SPECS</code></div><span class="arrow">→</span>
+          <div class="flow-box"><strong>Advertise</strong><code>link.register</code></div><span class="arrow">→</span>
+          <div class="flow-box"><strong>Execute</strong><code>link.invoke</code></div><span class="arrow">→</span>
+          <div class="flow-box"><strong>Return</strong><code>link.result</code></div>
+        </div>
+        <p class="small">Source directory: <code>muse-gadget-sdk/linux/src/musegadget/</code>. Links open the exact upstream revision we installed.</p>
+        <table class="sources">
+          <thead><tr><th>Where to look</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/executor.py#L96-L100"><code>executor.py:96–100</code></a></td><td>Declares <code>device.health</code>: description, empty required parameters and empty optional parameters.</td></tr>
+            <tr><td><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/executor.py#L134-L142"><code>Executor.run():134</code></a><br><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/executor.py#L293-L320"><code>device_health():293</code></a></td><td>Dispatches the name to <code>device_health()</code>, which reads Linux uptime, memory, load, disk and temperature, then wraps the result as <code>{ok, payload}</code>.</td></tr>
+            <tr><td><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/service.py#L131-L144"><code>service.py:131–144</code></a><br><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L82-L98"><code>link_client.py:82–98</code></a>, <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L257-L268"><code>257–268</code></a></td><td>Builds the device description from the catalog, serializes it as <code>commands_v2</code>, and sends <code>link.register</code> through the encrypted connection.</td></tr>
+            <tr><td><a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L533-L570"><code>link_client.py:533–570</code></a></td><td>Receives <code>link.invoke</code>, calls the supplied <code>run_command</code> callback in a thread pool, and sends <code>link.result</code> with the same invocation ID.</td></tr>
+          </tbody>
+        </table>
+
+
+        <h2><span class="number">02</span>Do we need to edit Meta’s code?</h2>
+        <table class="choices">
+          <thead><tr><th>Approach</th><th>Fit for this project</th></tr></thead>
+          <tbody>
+            <tr><td>Use today’s socket</td><td>Good for text submission. It exposes no custom-tool registration, voice upload, chat subscription or TTS retrieval. <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/service.py#L210-L253">Source</a></td></tr>
+            <tr class="selected"><td>Own adapter + SDK<br><span class="tiny">Recommended first</span></td><td>Supply our catalog to <code>DeviceDescription</code> and our dispatcher through <code>LinkSession(run_command=…)</code>. Add local IPC to the companion. No edits to Meta’s source files are required.</td></tr>
+            <tr><td>Small SDK extension</td><td>An optional future patch could make catalog/session injection a supported hook. This reduces reliance on private internals; a broad SDK fork is unnecessary.</td></tr>
+          </tbody>
+        </table>
+        <p class="small"><strong>The integration cost:</strong> stock <code>Service._session()</code> hardcodes the catalog. Our adapter would initially override that method and reuse the existing credential-refresh/reconnect loop. This is a version-pinned integration seam, not a supported plugin API. Test it against the installed revision.</p>
+        <p class="small"><strong>Deployment:</strong> replace the stock entrypoint, preserve pairing and keep a rollback path. Run one connection owner. Credentials stay in the adapter; plugins execute in the unprivileged worker.</p>
+      </div>
+      <footer><span>Source: Meta’s Muse Gadget SDK · Apache-2.0 · revision <code>f60347a</code></span><span>1 / 2</span></footer>
+    </article>
+
+    <article class="page" aria-labelledby="page-two-title">
+      <div class="content">
+        <p class="eyebrow">02 / Proposed runtime and the next working increment</p>
+        <h1 id="page-two-title">A companion runtime we own</h1>
+        <p class="lead">A Muse adapter owns the connection. A separate Reachy worker runs our companion.</p>
+        <div class="architecture" role="img" aria-label="Muse communicates through one encrypted session with our SDK adapter. The adapter uses a protected local socket to communicate with an unprivileged companion worker that owns Reachy's hardware.">
+          <div class="node"><strong>Your Muse</strong>Chooses advertised tools<br>Handles conversation<br>Produces replies</div>
+          <div class="connector">⇄</div>
+          <div class="node sdk"><strong>Our SDK adapter</strong>Muse Python 3.13 environment<br>Credentials + one LinkSession<br>Catalog + media/event transport</div>
+          <div class="connector">⇄</div>
+          <div class="node"><strong>Companion worker</strong>Reachy Python 3.12 environment<br>Unprivileged tool handlers<br>Media + behavior lifecycle</div>
+        </div>
+        <p class="tiny">Cloud link: SDK’s encrypted protocol. Local link: proposed permission-restricted Unix socket with framed, size-limited messages and binary audio chunks.</p>
+
+        <h2><span class="number">03</span>Discovery, indexing and execution</h2>
+        <p>Load an explicit list of installed modules. Each supplies a name, version, description, parameter schema, timeout and handler. Validate these and build a <strong>name → handler index</strong>. The adapter exports this catalog in the SDK’s command format; no search database is needed.</p>
+        <p>The worker runs handlers and behavior routines, validates inputs, serializes hardware actions and handles start/stop cleanup. Freeze the catalog per connection; re-register on controlled restart. Live catalog replacement is unverified.</p>
+
+        <h2><span class="number">04</span>How the runtime talks to Muse</h2>
+        <table class="map">
+          <thead><tr><th>Capability</th><th>SDK mechanism and our responsibility</th></tr></thead>
+          <tbody>
+            <tr><td>Tools</td><td><code>DeviceDescription(commands=…)</code> + <code>LinkSession(run_command=…)</code>. Route incoming invocations over local IPC to the indexed handler, then return a bounded result. Retain the existing built-ins initially. <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L142-L156">Source</a></td></tr>
+            <tr><td>Chats</td><td><code>send_chat(text, session_id)</code> targets a chat; a new ID is documented to create one. Reuse our UUID below, or deliberately choose a new UUID and verify the new chat in Muse. All chats share one connection. <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L272-L291">Source</a></td></tr>
+            <tr><td>Microphone</td><td>Worker records push-to-talk audio as mono PCM16 WAV. Adapter calls <code>send_voice(wav, id, output_modality="voice")</code>. WAV limit: 2 MiB. Begin with recorded turns. <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L293-L316">Source</a></td></tr>
+            <tr><td>Replies / speech</td><td>Start <code>subscribe_chat(id)</code> and await readiness before sending. Feed the acknowledgement’s <code>response</code> and events to <code>MuseTurn</code>/<code>ReplayScope</code>. Fetch a completed voice reply using <code>stream_tts(message_id)</code>; decode/resample its MP3 and play once. <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/link_client.py#L392-L446">Streams</a> · <a href="https://github.com/facebookincubator/muse-gadget-sdk/blob/f60347aeb851a1fe9438cfc388721776aa24f275/linux/src/musegadget/muse_turn.py#L194-L277">Correlation</a></td></tr>
+            <tr><td>Recovery / stop</td><td>Reuse SDK refresh/reconnect. Cancel local playback/motion, discard old-turn queues and resubscribe. Local stop does not establish cancellation of Muse’s remote task.</td></tr>
+          </tbody>
+        </table>
+        <p class="tiny">Project chat label: <code>reachy-voice</code> · API ID: a UUID persisted in private runtime state.<br>The literal label was rejected by the live server. Voice output and camera understanding still require live validation.</p>
+
+        <h2><span class="number">05</span>Build this first</h2>
+        <ol>
+          <li><strong>Create our package:</strong> <code>registry.py</code>, <code>runtime.py</code>, <code>muse_adapter.py</code>, <code>ipc.py</code> and <code>tools/status.py</code> in <code>msdos-reachy</code>. First tool: read-only <code>reachy.status</code>; first local command: list indexed tools.</li>
+          <li><strong>Test with a fake VM:</strong> catalog registration, validation, IDs, payload limits, handler deadlines and reconnects. Implement bounded IPC for tools, text, events and media.</li>
+          <li><strong>First live checkpoint:</strong> Muse calls <code>reachy.status</code> successfully; a typed runtime request receives its matching reply. Then add speech, microphone turns and gestures after the pending hardware checks with an observer.</li>
+        </ol>
+        
+      </div>
+      <footer><span>Proposed design · SDK <code>f60347a</code> · <a href="../SPEC.md">Runtime specification</a></span><span>2 / 2</span></footer>
+    </article>
+  </main>
+</body>
+</html>
