@@ -1,6 +1,6 @@
 # Deployment and rollback
 
-The worker and Muse adapter have been deployed with camera enabled. The operator confirmed a successful photo request through the Muse app. Companion-originated text replies have not passed live acceptance; audio and motion remain disabled. See [acceptance status](../docs/implementation.md) for the remaining gates. The instructions below describe provisioning and rollback without publishing machine-specific configuration.
+The worker and Muse adapter have been deployed with camera and `nod` enabled. The operator confirmed successful photo and nod requests through Muse. Other motion intensities and hold-on-stop remain unverified. Companion-originated text replies have not passed live acceptance; audio and automatic motion cues remain disabled. See [acceptance status](../docs/implementation.md) for the remaining gates. The instructions below describe provisioning and rollback without publishing machine-specific configuration.
 
 ## Build
 

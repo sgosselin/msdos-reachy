@@ -4,7 +4,7 @@ A standalone Reachy companion powered by Muse. The worker indexes explicitly ena
 
 Read [SPEC.md](SPEC.md) for requirements and [the architecture note](docs/companion-runtime.html) for background. Meta's SDK is a third-party dependency. Our only SDK change is the [versioned service-hook patch](muse-gadget-sdk-patches/README.md); custom tools do not require editing `executor.py`.
 
-The implementation includes the registry, lifecycle, authenticated Unix IPC, custom-tool dispatch, correlated text/voice turns, cancellation, camera size limits and optional bounded cues. **The worker and adapter are deployed on Reachy; a camera request from the Muse app succeeded and was confirmed by the operator.** The deployed configuration enables camera only. All hardware features remain disabled in the example configuration. Companion-originated chat replies, audio and motion still need live acceptance; see [current status](docs/implementation.md).
+The implementation includes the registry, lifecycle, authenticated Unix IPC, custom-tool dispatch, correlated text/voice turns, cancellation, camera size limits and optional bounded cues. **The worker and adapter are deployed on Reachy; the operator confirmed successful camera and nod requests through Muse.** The deployed configuration enables camera and the `nod` preset. Audio and automatic motion cues remain disabled. All hardware features remain disabled in the example configuration. Companion-originated chat replies, audio and further motion acceptance remain pending; see [current status](docs/implementation.md).
 
 ## Local development
 
